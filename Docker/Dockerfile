@@ -72,17 +72,14 @@ RUN wget https://github.com/wrpearson/fasta36/archive/refs/tags/v36.3.8h_04-May-
 WORKDIR $SRC
 
 ## pasapipeline v2.5.1
-ENV PASA_CO 15f2b9365c393f0068a269eb00b3acb2bc06983a
-
-RUN git clone https://github.com/PASApipeline/PASApipeline.git && \
+RUN PASA_VER=v2.5.1 && \
+    wget https://github.com/PASApipeline/PASApipeline/releases/download/pasa-$PASA_VER/PASApipeline-$PASA_VER.FULL.tar.gz && \
+    tar xvf PASApipeline-$PASA_VER.FULL.tar.gz && \
+    mv PASApipeline-$PASA_VER PASApipeline && \
     cd PASApipeline && \
-    git checkout $PASA_CO && \
-    git submodule init && git submodule update && \
     make
-
 
 ENV PASAHOME /usr/local/src/PASApipeline
 
 RUN cp $PASAHOME/bin/* /usr/local/bin/
 COPY conf.txt /usr/local/src/PASApipeline/pasa_conf/
-
