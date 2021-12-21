@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-LABEL maintainer="bhaas@broadinstitute.org"
+LABEL maintainer="fujino@edu.k.u-tokyo.ac.jp"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV LANG C.UTF-8
@@ -72,12 +72,14 @@ RUN wget https://github.com/wrpearson/fasta36/archive/refs/tags/v36.3.8h_04-May-
 WORKDIR $SRC
 
 ## pasapipeline v2.5.1
-RUN PASA_VER=v2.5.1 && \
-    wget https://github.com/PASApipeline/PASApipeline/releases/download/pasa-$PASA_VER/PASApipeline-$PASA_VER.FULL.tar.gz && \
-    tar xvf PASApipeline-$PASA_VER.FULL.tar.gz && \
-    mv PASApipeline-$PASA_VER PASApipeline && \
+ENV PASA_CO d7d3242682edd2a7b0ed222c7230953588fb42f5
+
+RUN git clone --filter=tree:0 https://github.com/PASApipeline/PASApipeline.git && \
     cd PASApipeline && \
+    git checkout $PASA_CO && \
+    git submodule init && git submodule update && \
     make
+
 
 ENV PASAHOME /usr/local/src/PASApipeline
 
